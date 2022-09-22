@@ -11,7 +11,7 @@ import json                         #noticias
 import webbrowser                   #https://docs.python.org/es/3/library/webbrowser.html
 import os
 #import pyaudio
-
+from programas import App
 
 # configuration
 '''
@@ -27,6 +27,9 @@ engine.setProperty('voice', voices[0].id)
 engine.setProperty("rate", 180)
 # print(voice[0].id)
 
+app_l = []
+userpath = os.environ["USERPROFILE"]
+programPath = "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs"
 
 wikipedia.set_lang("es")
 
@@ -98,7 +101,7 @@ def news(query):
     """busca noticias actuales, atreves de un API
     :query: consulta  en  texto
     :returns: retorna texto para hablr o None
- 
+
     """
     speak("Titulares..")
     query = query.replace("noticias","")
@@ -138,7 +141,7 @@ def search(query):
         webbrowser.open(f"{l[1]}{query}")
 
 
- 
+
 def abrir(query):
     """Abre aplicaciones
 
@@ -146,8 +149,18 @@ def abrir(query):
     :returns: abre app
 
     """
-    speak(f"abriendo, {query}")
     #falta
+    with os.chdir(f"{userpath}{programPath}") as Path:
+        apps = os.listdir()
+        speak(f"abriendo, {query}")
+
+def onlyExe(lista):
+    """limpia la lista, para quitar direcctorio ysolo poner archivos .exe"""
+    exes = []
+    for el in lista:
+        if ".exe" in el:            #si el --> str contine ".exe"
+            Pg = App(el[:-4], )
+            exes.apped(el)
 
 def prettieQuery(query, remove = None ):
     """convierte la consulta en una  pero mas limpia
@@ -190,14 +203,12 @@ def option(query):
         speak(f"Tu direción IP: {ip}")
 
 
-
     elif ("abre" in query) or ("abrir" in query):
         query = prettieQuery(query,["abre", "abrir"])
         abrir(query)
 
 
 def main():
-    #autor = "Erick Cruz"
     yosoy()
     some = listen()
     option(some)
