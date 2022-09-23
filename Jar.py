@@ -27,12 +27,14 @@ engine.setProperty('voice', voices[0].id)
 engine.setProperty("rate", 180)
 # print(voice[0].id)
 
-app_l = []
-userpath = os.environ["USERPROFILE"]
-programPath = "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs"
-
 wikipedia.set_lang("es")
 
+app_l = []
+userpath = os.environ["USERPROFILE"]
+PathUser = "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs"
+PrgPath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs"
+
+#funtions
 def speak(audio):
     """conversor de texto plano a audio
 
@@ -95,8 +97,6 @@ def wiki(query):
     print(result)
     speak(result)
 
-
-
 def news(query):
     """busca noticias actuales, atreves de un API
     :query: consulta  en  texto
@@ -114,7 +114,6 @@ def news(query):
         speak(articulo["title"])
         # speak (articles["description"])
         speak("Siguiente Noticia...")
-
 
 def search(query):
     """cuando escuche la palabra busca  o buscar, entrara en esta funcion
@@ -140,8 +139,6 @@ def search(query):
         # speak(" en google...")
         webbrowser.open(f"{l[1]}{query}")
 
-
-
 def abrir(query):
     """Abre aplicaciones
 
@@ -150,17 +147,38 @@ def abrir(query):
 
     """
     #falta
-    with os.chdir(f"{userpath}{programPath}") as Path:
+    with os.chdir(f"{userpath}{PathUser}") as Path:
         apps = os.listdir()
         speak(f"abriendo, {query}")
 
-def onlyExe(lista):
-    """limpia la lista, para quitar direcctorio ysolo poner archivos .exe"""
+def cargaAPP():
+    """Lee los directorios del prgrama para guardarlos en en una lista 
+
+    :arg1: TODO
+    :returns: abre app
+
+    """
+    #falta
+
+    with os.chdir(f"{userpath}{PathUser}") as Path:
+        apps = os.listdir()
+        onlyExe(apps, Path)
+
+
+def onlyExe(lista, path):
+    """limpia la lista, para quitar direcctorio ysolo poner archivos .exe
+        lista: ["breve.exe", "dicorbs"]
+        path :current work directory
+
+        return: lista de la clase APP
+    """
     exes = []
     for el in lista:
         if ".exe" in el:            #si el --> str contine ".exe"
-            Pg = App(el[:-4], )
+            Prg = App(el[:-4], path)
             exes.apped(el)
+    return exes
+
 
 def prettieQuery(query, remove = None ):
     """convierte la consulta en una  pero mas limpia
@@ -202,11 +220,9 @@ def option(query):
         print(f"Tu direción IP: {ip}")
         speak(f"Tu direción IP: {ip}")
 
-
     elif ("abre" in query) or ("abrir" in query):
         query = prettieQuery(query,["abre", "abrir"])
         abrir(query)
-
 
 def main():
     yosoy()

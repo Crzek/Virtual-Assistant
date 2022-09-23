@@ -19,7 +19,7 @@ class App:
         return self.Name
 
     def get_path(self):
-        return self.path
+        return self.Path
 
 
     def set_name(self,value):
