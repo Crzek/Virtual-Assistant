@@ -31,15 +31,25 @@ wikipedia.set_lang("es")
 
 app_l = []
 userpath = os.environ["USERPROFILE"]
-PathUser = "\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs"
-PrgPath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs"
+PathUser = f"{userpath}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\"
+PrgPath = "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\"
 
 #funtions
+def change_rute(path,old = "\\",caracter = "/"):
+    """TODO: C:sers\ERICK
+            C:/Users/ERICK
+
+    :path: Ruta
+    :returns: path corregido
+
+    """
+    return path.replace(old, caracter)
+
 def speak(audio):
     """conversor de texto plano a audio
 
     :audio: str
-    :returns: audio
+    :returns: audi\o
 
     """
     engine.say(audio)
@@ -139,6 +149,28 @@ def search(query):
         # speak(" en google...")
         webbrowser.open(f"{l[1]}{query}")
 
+def gopath(appPath):
+    """ si una app tiene un ruta, esta la devuelve en su directorios
+
+    ejemplo: brave.lnk  ---->acceso directo
+    :ruta :C:ers\ERICK\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Brave.lnk
+    :devuelve: C:ers\ERICK\AppData\Roaming\Microsoft\Windows\Start Menu\Programs
+
+    appPath: es el paht del app
+
+    """
+
+    i = 0
+    path = False
+    while (-len(appPath) < i) and (not path):
+        if path[i] == "\\":
+            path = True
+        else:
+            i = i -1
+    if path:
+        return path[:i-1]
+    else:
+        print("NO se puee volver al path anterior")
 def abrir(query):
     """Abre aplicaciones
 
@@ -147,36 +179,85 @@ def abrir(query):
 
     """
     #falta
-    with os.chdir(f"{userpath}{PathUser}") as Path:
-        apps = os.listdir()
-        speak(f"abriendo, {query}")
+    if len(app_l) != 0:
+        pro = busca_appl(query)
+        speak(f"abriendo..., {query}")
+        os.system (pro.get_path())
+    else:
+        speak("NO, tienes aplicaciones guardadas")
+
+def busca_appl(name, Alias = None):
+    """ itera la appl para buscar EL nombre que conincide con la query
+
+    :Name : sera la query
+    :Alias : por defecto es None, pero si el progrma tiene self.ALias ---> se buscara por ahi
+
+    """
+    """algoritmo de Busqueda
+
+    :name es el objeto que se busca o progrma
+    :returns devuelve e; pbjeto progrma
+
+    """
+
+    i = 0
+    trobat = False
+    while (len(app_l) > i) and (not trobat):
+        if (app_l[i].get_name() == name) or (app_l[i].get_alias() == Alias):
+            trobat = True
+        else:
+            i = i +1
+    if trobat:
+        return app_l[i]        #devuelve la posicon de la lista( i ) o el objeto (app_l[i]) 
+    else:
+        print("No se ha encontrado elemento")
+
+def sayAPPS(l_prg):
+    """te dice en audo que progrmas tiene a su disposicion para abrir
+
+    :l_prg: lista de la clase programas
+    :returns: TODO
+
+    """
+    speak("los programas que tienes a disposicion son:")
+    for app in l_prg:
+        ap = app.get_name()
+        speak(ap)
+        print(ap)
 
 def cargaAPP():
-    """Lee los directorios del prgrama para guardarlos en en una lista 
+    """Lee los directorios del prgrama para guardarlos en en una lista
 
     :arg1: TODO
     :returns: abre app
 
     """
     #falta
+    speak("Cargaré unos Programas para tenerlos a tu disposición")
+    for path in [PathUser,PrgPath]:
+        apps = os.listdir(path)
+        #with os.listdir(path) as apps:
+        Exes = onlyLNK(apps, path)
+        app_l.extend(Exes)          #app_l = app_l + Exes
 
-    with os.chdir(f"{userpath}{PathUser}") as Path:
-        apps = os.listdir()
-        onlyExe(apps, Path)
+    if len(app_l) >= 1:
+        speak(f"Programas cargados, se han cargado {len(app_l)} Aplicaciones")
+    else:
+        speak("No se ha cargado, ninguna Aplicación")
 
 
-def onlyExe(lista, path):
-    """limpia la lista, para quitar direcctorio ysolo poner archivos .exe
-        lista: ["breve.exe", "dicorbs"]
+def onlyLNK(lista, path):
+    """limpia la lista, para quitar direcctorio y solo quedarme con los accesos directos
+        lista: ["breve.lnk", "dicorbs"]
         path :current work directory
-
         return: lista de la clase APP
     """
     exes = []
     for el in lista:
-        if ".exe" in el:            #si el --> str contine ".exe"
-            Prg = App(el[:-4], path)
-            exes.apped(el)
+        if ".lnk" in el:
+            new_p = path + "/" + el
+            Prg = App(el[:-4], new_p)
+            exes.append(Prg)
     return exes
 
 
@@ -193,7 +274,7 @@ def prettieQuery(query, remove = None ):
             query = query.replace(r,"")
     else:                                   #remove es un str
         query = query.replace(remove, "")
-    return query
+    return query.strip()    #elimina los espacion en blanco
 
 def option(query):
     """diferente tareas que puede realizar JARVIS
@@ -224,8 +305,14 @@ def option(query):
         query = prettieQuery(query,["abre", "abrir"])
         abrir(query)
 
+    elif ("programa" in query) or ("tengo" in query):
+        sayAPPS(app_l)
+        speak("cual programa quieres que habra?")
+
+
 def main():
     yosoy()
+    cargaAPP()
     some = listen()
     option(some)
 
