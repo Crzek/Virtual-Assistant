@@ -163,12 +163,12 @@ def gopath(appPath):
     i = 0
     path = False
     while (-len(appPath) < i) and (not path):
-        if path[i] == "\\":
+        if appPath[i] == "\\":
             path = True
         else:
             i = i -1
     if path:
-        return path[:i-1]
+        return appPath[:i], appPath[i+1:]       #path, nombre app
     else:
         print("NO se puee volver al path anterior")
 def abrir(query):
@@ -180,9 +180,11 @@ def abrir(query):
     """
     #falta
     if len(app_l) != 0:
-        pro = busca_appl(query)
+        pro = busca_appl(query)         #busca la app en lista de app_l
+        dir, name = gopath(pro.get_path())        #dirrectoria de programas
+        os.chdir(dir)
         speak(f"abriendo..., {query}")
-        os.system (pro.get_path())
+        os.system(name)
     else:
         speak("NO, tienes aplicaciones guardadas")
 
@@ -255,7 +257,7 @@ def onlyLNK(lista, path):
     exes = []
     for el in lista:
         if ".lnk" in el:
-            new_p = path + "/" + el
+            new_p = path + el
             Prg = App(el[:-4], new_p)
             exes.append(Prg)
     return exes
