@@ -1,4 +1,4 @@
-# vVirtual Assistant
+# Virtual Assistant
 
 Is a software agent that helps users of computer systems, automating and performing tasks with minimal human-machine interaction. Run from the terminal.
 
