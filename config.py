@@ -15,17 +15,26 @@ espeak.py  for ubuntu
 nsss.py for Macs
 sapi5   for Windows
 '''
-engine = pyttsx3.init('sapi5')
-voices  = engine.getProperty('voices')
+
+AUTOR = "Erick"
+LANGUAGE = "es-ES"
+
+ENGINE = pyttsx3.init('sapi5')
+voices  = ENGINE.getProperty('voices')
+
+
 # print(voices)
-engine.setProperty('voice', voices[0].id)
-engine.setProperty("rate", 180)
+ENGINE.setProperty('voice', voices[0].id)
+ENGINE.setProperty("rate", 180)
 # print(voice[0].id)
 
-wikipedia.set_lang("es")
+# wikipeadia lang
+wikipedia.set_lang(LANGUAGE)
 
+
+# for program apps
 APP_LIST = []
 USER_PATH = os.environ["USERPROFILE"]
-START_PATH = f"{userpath}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\"
+START_PATH = f"{USER_PATH}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\"
 PROGRAM_PATH = "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\"
 

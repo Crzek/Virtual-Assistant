@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# APP class
+from programas import App
 
-import pyttsx3                      #texto to audio
+# reed your apps in Windows
+from config import AUTOR, APP_LIST, START_PATH, PROGRAM_PATH, ENGINE, voices, LANGUAGE
+
+
+
 import datetime
 import speech_recognition as sr     #audio to txt
 import wikipedia
@@ -11,28 +17,6 @@ import json                         #noticias
 import webbrowser                   #https://docs.python.org/es/3/library/webbrowser.html
 import os
 #import pyaudio
-from programas import App
-
-# configuration
-'''
-https://ichi.pro/es/introduccion-a-pyttsx3-un-conversor-de-texto-a-voz-para-python-81905511310787
-espeak.py  for ubuntu
-nsss.py for Macs
-sapi5   for Windows
-'''
-engine = pyttsx3.init('sapi5')
-voices  = engine.getProperty('voices')
-# print(voices)
-engine.setProperty('voice', voices[0].id)
-engine.setProperty("rate", 180)
-# print(voice[0].id)
-
-wikipedia.set_lang("es")
-
-app_l = []
-userpath = os.environ["USERPROFILE"]
-PathUser = f"{userpath}\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\"
-PrgPath = "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\"
 
 #funtions
 def change_rute(path,old = "\\",caracter = "/"):
@@ -52,8 +36,8 @@ def speak(audio):
     :returns: audi\o
 
     """
-    engine.say(audio)
-    engine.runAndWait()
+    ENGINE.say(audio)
+    ENGINE.runAndWait()
 
 def yosoy():
     """
@@ -69,7 +53,7 @@ def yosoy():
     else:
         speak("Buenas Noches")
 
-    speak(f"Bienvenido {autor}, Soy Jarvis, un Asistente virtual")
+    speak(f"Bienvenido {AUTOR}, Soy Jarvis, un Asistente virtual")
 
 def listen():
     """Hablar para que capte informacion y la escriba
@@ -85,12 +69,12 @@ def listen():
 
     try:
         print("Reconociendo...")
-        query = rec.recognize_google(audio, language="es-ES")
+        query = rec.recognize_google(audio, language=LANGUAGE)
         print(f"User Said:{query} \n") # muestra lo que has escrito
         return query.lower()
 
     except Exception as e:
-        print(f"Disculpa {autor}, puedes repetir...")
+        print(f"Disculpa {AUTOR}, puedes repetir...")
         return None
 
 def wiki(query):
@@ -179,8 +163,8 @@ def abrir(query):
 
     """
     #falta
-    if len(app_l) != 0:
-        pro = busca_appl(query)         #busca la app en lista de app_l
+    if len(APP_LIST) != 0:
+        pro = busca_appl(query)         #busca la app en lista de APP_LIST
         dir, name = gopath(pro.get_path())        #dirrectoria de programas
         os.chdir(dir)
         speak(f"abriendo..., {query}")
@@ -204,13 +188,13 @@ def busca_appl(name, Alias = None):
 
     i = 0
     trobat = False
-    while (len(app_l) > i) and (not trobat):
-        if (app_l[i].get_name() == name) or (app_l[i].get_alias() == Alias):
+    while (len(APP_LIST) > i) and (not trobat):
+        if (APP_LIST[i].get_name() == name) or (APP_LIST[i].get_alias() == Alias):
             trobat = True
         else:
             i = i +1
     if trobat:
-        return app_l[i]        #devuelve la posicon de la lista( i ) o el objeto (app_l[i]) 
+        return APP_LIST[i]        #devuelve la posicon de la lista( i ) o el objeto (APP_LIST[i]) 
     else:
         print("No se ha encontrado elemento")
 
@@ -236,14 +220,14 @@ def cargaAPP():
     """
     #falta
     speak("Cargaré unos Programas para tenerlos a tu disposición")
-    for path in [PathUser,PrgPath]:
+    for path in [START_PATH,PROGRAM_PATH]:
         apps = os.listdir(path)
         #with os.listdir(path) as apps:
         Exes = onlyLNK(apps, path)
-        app_l.extend(Exes)          #app_l = app_l + Exes
+        APP_LIST.extend(Exes)          #APP_LIST = APP_LIST + Exes
 
-    if len(app_l) >= 1:
-        speak(f"Programas cargados, se han cargado {len(app_l)} Aplicaciones")
+    if len(APP_LIST) >= 1:
+        speak(f"Programas cargados, se han cargado {len(APP_LIST)} Aplicaciones")
     else:
         speak("No se ha cargado, ninguna Aplicación")
 
@@ -308,7 +292,7 @@ def option(query):
         abrir(query)
 
     elif ("programa" in query) or ("tengo" in query):
-        sayAPPS(app_l)
+        sayAPPS(APP_LIST)
         speak("cual programa quieres que habra?")
 
 
@@ -319,6 +303,6 @@ def main():
     option(some)
 
 
-autor = "Erick"
+
 if __name__ == "__main__":
     main()
