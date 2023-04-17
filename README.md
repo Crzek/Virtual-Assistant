@@ -16,6 +16,6 @@ What Can I DO?
 Note: still in development
 
 How to run?
-sh
+```sh
 python main.py
-``` `````
+```
