@@ -4,7 +4,7 @@ Is a software agent that helps users of computer systems, automating and perform
 
 ![JARVIS](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1bbd2WVHl17DU5-l9BRj6yiiy85Z3vArVXg&usqp=CAU)
 
-What Can I DO?
+##What Can I DO?
 1. Search on Wikipedia
 2. News
 3. Search in Browser
@@ -15,7 +15,14 @@ What Can I DO?
 
 Note: still in development
 
-How to run?
+## Install dependence
+
+```sh
+pip install pipenv
+pipenv shell
+```
+
+## How to run?
 ```sh
 python main.py
 ```
