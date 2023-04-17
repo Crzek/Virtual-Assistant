@@ -14,3 +14,8 @@ What Can I DO?
 
 
 Note: still in development
+
+How to run?
+sh
+python main.py
+``` `````
